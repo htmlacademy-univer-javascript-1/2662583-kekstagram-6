@@ -1,10 +1,10 @@
-function lenStr(str, maxLen){
+function checkLenStr(str, maxLen){
   return str.length <= maxLen;
 }
 
-lenStr('Привет', 10);
+checkLenStr('Привет', 10);
 
-function isPolindrome(str){
+function isPalindrome(str){
   const normalizeStr = str.replaceAll(' ', '').toUpperCase();
   let reverseStr = '';
   for (let i = normalizeStr.length -1; i >= 0; i-- ){
@@ -14,9 +14,9 @@ function isPolindrome(str){
   return reverseStr === normalizeStr;
 }
 
-isPolindrome('Лёша на полке клопа нашёл ');
+isPalindrome('Лёша на полке клопа нашёл ');
 
-function numbers(str){
+function extractNumbers(str){
   if (typeof str === 'number') {
     str = str.toString();
   }
@@ -28,8 +28,8 @@ function numbers(str){
       result += char;
     }
   }
-  return result === '' ? NaN : parseInt(result, 10);
+  return result === parseInt(result, 10);
 }
 
-numbers('ECMAScript 2022');
+extractNumbers('ECMAScript 2022');
 
