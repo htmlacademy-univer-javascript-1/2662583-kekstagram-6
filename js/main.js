@@ -89,5 +89,5 @@ const createPhoto = (index) => ({
 
 const createPhotos = () => Array.from({length: 25}, (_, index) => createPhoto(index));
 
-const photos = createPhotos();
+createPhotos();
 
