@@ -14,4 +14,5 @@ const createCommentId = () => {
     return lastCommentId;
   };
 };
+
 export {getRandomArrayElement, getRandomInteger, createCommentId};
