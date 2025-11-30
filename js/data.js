@@ -1,13 +1,11 @@
 import {getRandomArrayElement, getRandomInteger, createCommentId} from './util.js';
-import {NAMES, MESSAGES, DESCRIPTIONS} from './enum.js';
+import {NAMES, MESSAGES, DESCRIPTIONS, POSTS_COUNT, MIN_LIKES, MAX_LIKES, MIN_COMMENTS, MAX_COMMENTS,
+  MIN_AVATAR, MAX_AVATAR, MIN_MESSAGES_COUNT,MAX_MESSAGES_COUNT} from './constants.js';
 
 const generateCommentId = createCommentId();
 
 const generateComment = () => {
-  const countMessage = getRandomInteger(1,2);
-  const randomAvatar = getRandomInteger(1, 6);
-  const randomName = getRandomArrayElement(NAMES);
-
+  const countMessage = getRandomInteger(MIN_MESSAGES_COUNT, MAX_MESSAGES_COUNT);
   let message = '';
   if (countMessage === 1){
     message = getRandomArrayElement(MESSAGES);
@@ -22,31 +20,26 @@ const generateComment = () => {
   }
   return {
     id: generateCommentId(),
-    avatar: `img/avatar-${randomAvatar}.svg`,
+    avatar: `img/avatar-${getRandomInteger(MIN_AVATAR, MAX_AVATAR)}.svg`,
     message: message,
-    name: randomName,
+    name: getRandomArrayElement(NAMES),
   };
 };
 
 const createComments = () => {
-  const countComments = getRandomInteger(0, 30);
+  const countComments = getRandomInteger(MIN_COMMENTS, MAX_COMMENTS);
   return Array.from({length: countComments}, generateComment);
 };
 
 
-const createPost = (index) => {
-  const randomDescription = getRandomArrayElement(DESCRIPTIONS);
-  const randomLikes = getRandomInteger(15, 200);
-  const comments = createComments();
-  return {
-    id: index + 1,
-    url: `photos/${index + 1}.jpg`,
-    description: randomDescription,
-    likes: randomLikes,
-    comments: comments,
-  };
-};
+const createPost = (index) => ({
+  id: index + 1,
+  url: `photos/${index + 1}.jpg`,
+  description: getRandomArrayElement(DESCRIPTIONS),
+  likes: getRandomInteger(MIN_LIKES, MAX_LIKES),
+  comments: createComments(),
+});
 
-const createPosts = () => Array.from({length: 25}, (_, index) => createPost(index));
+const createPosts = () => Array.from({length: POSTS_COUNT}, (_, index) => createPost(index));
 
 export {createPosts};
