@@ -33,3 +33,21 @@ function extractNumbers(str){
 }
 
 extractNumbers('ECMAScript 2022');
+
+
+function isMeetingInWorkHours(startWork, endWork, startMeeting, duration){
+  function toMinutes(timeStr){
+    const [hours, minutes] = timeStr.split(':');
+    return parseInt(hours, 10)* 60 + parseInt(minutes, 10);
+  }
+
+  const startWorkMinutes = toMinutes(startWork);
+  const endWorkMinutes = toMinutes(endWork);
+  const startMeetingMinutes = toMinutes(startMeeting);
+
+  return startMeetingMinutes + duration <= endWorkMinutes && startMeetingMinutes >= startWorkMinutes;
+}
+
+
+isMeetingInWorkHours('08:00', '17:30', '14:00', 90);
+
