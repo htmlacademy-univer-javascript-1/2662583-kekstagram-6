@@ -1,8 +1,10 @@
 import {createPosts} from './data.js';
+import {openBigPicture} from './bigPicture.js';
 
 const createThumbnail = (post) => {
   const pictureTemplate =  document.querySelector('#picture').content;
   const thumbnail = pictureTemplate.cloneNode(true);
+  const pictureElement = thumbnail.querySelector('.picture');
   const imgElement = thumbnail.querySelector('.picture__img');
   const commentsElement = thumbnail.querySelector('.picture__comments');
   const likesElement = thumbnail.querySelector('.picture__likes');
@@ -11,6 +13,11 @@ const createThumbnail = (post) => {
   imgElement.alt = post.description;
   commentsElement.textContent = post.comments.length;
   likesElement.textContent = post.likes;
+
+  pictureElement.addEventListener('click', (evt) =>{
+    evt.preventDefault();
+    openBigPicture(post);
+  });
 
   return thumbnail;
 };
