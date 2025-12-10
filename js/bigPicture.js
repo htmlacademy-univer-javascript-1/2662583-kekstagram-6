@@ -1,7 +1,6 @@
-import './thumbnail.js';
 import {isEscapeKey} from './util.js';
 
-const onDocumentKeydown = (evt) => {
+const closeKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeBigPicture();
@@ -36,6 +35,7 @@ function openBigPicture(post) {
   const commentsCount = bigPicture.querySelector('.comments-count');
   const socialCaption = bigPicture.querySelector('.social__caption');
   const socialComments = bigPicture.querySelector('.social__comments');
+  const buttonCancel= bigPicture.querySelector('.big-picture__cancel');
 
   bigPictureImg.src = post.url;
   bigPictureImg.alt = post.description;
@@ -57,26 +57,19 @@ function openBigPicture(post) {
 
   bigPicture.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
-}
+  document.addEventListener('keydown', closeKeydown);
+  buttonCancel.addEventListener('click', closeBigPicture);
 
+}
 
 function closeBigPicture() {
   const bigPicture = document.querySelector('.big-picture');
+  const buttonCancel= bigPicture.querySelector('.big-picture__cancel');
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-}
-
-function initBigPicture(){
-  const bigPicture = document.querySelector('.big-picture');
-  const buttonCancel= bigPicture.querySelector('.big-picture__cancel');
-
-  buttonCancel.addEventListener('click', () =>{
-    closeBigPicture();
-  });
+  document.removeEventListener('keydown', closeKeydown);
+  buttonCancel.removeEventListener('click', closeBigPicture);
 
 }
 
-
-export {openBigPicture, initBigPicture};
+export {openBigPicture};
