@@ -32,7 +32,7 @@ const createComment = (comment) => {
   return commentElement;
 };
 
-const loaderCommentsClick = ()=>{
+const onLoaderCommentsClick = ()=>{
   const socialComments = document.querySelector('.social__comments');
   const socialCommentsCount = document.querySelector('.social__comment-count');
   const commentsLoader = document.querySelector('.social__comments-loader');
@@ -87,7 +87,7 @@ function openBigPicture(post) {
     commentsLoader.classList.add('hidden');
   } else{
     commentsLoader.classList.remove('hidden');
-    commentsLoader.addEventListener('click', loaderCommentsClick);
+    commentsLoader.addEventListener('click', onLoaderCommentsClick);
   }
 
   bigPicture.classList.remove('hidden');
@@ -105,7 +105,7 @@ function closeBigPicture() {
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', closeKeydown);
   buttonCancel.removeEventListener('click', closeBigPicture);
-  commentsLoader.removeEventListener('click', loaderCommentsClick);
+  commentsLoader.removeEventListener('click', onLoaderCommentsClick);
 }
 
 export {openBigPicture};
