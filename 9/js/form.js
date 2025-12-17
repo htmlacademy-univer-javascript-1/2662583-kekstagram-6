@@ -1,23 +1,39 @@
 import {HASHTAG_REGEX, MAX_HASHTAGS, MAX_COMMENT_LENGTH} from './constants.js';
 
 let pristine;
+let lastHashtagError = '';
 
 const validateHashtags = (value) => {
+  lastHashtagError = '';
+  if (!value.trim()) {
+    return true;
+  }
 
   const hashtags = value.toLowerCase().split(' ').filter((tag) => tag.length > 0);
 
   if (hashtags.length > MAX_HASHTAGS) {
+    lastHashtagError = `Максимум ${MAX_HASHTAGS} хэш-тегов`;
     return false;
   }
 
   for (let i = 0; i < hashtags.length; i++) {
     const hashtag = hashtags[i];
     if (!HASHTAG_REGEX.test(hashtag)) {
+      if (hashtag[0] !== '#') {
+        lastHashtagError = 'Хэш-тег должен начинаться с #';
+      } else if (hashtag.length === 1) {
+        lastHashtagError = 'Хэш-тег не может состоять только из #';
+      } else if (hashtag.length > 20) {
+        lastHashtagError = 'Максимальная длина хэш-тега 20 символов';
+      } else {
+        lastHashtagError = 'Недопустимые символы в хэш-теге';
+      }
       return false;
     }
 
     const firstIndex = hashtags.indexOf(hashtag);
     if (firstIndex !== i) {
+      lastHashtagError = 'Хэш-теги не должны повторяться';
       return false;
     }
   }
@@ -25,43 +41,6 @@ const validateHashtags = (value) => {
   return true;
 };
 
-const getHashtagErrorMessage = (value) => {
-  if (!value.trim()) {
-    return '';
-  }
-
-  const hashtags = value.toLowerCase().split(' ').filter((tag) => tag.length > 0);
-
-  if (hashtags.length > MAX_HASHTAGS) {
-    return `Максимум ${MAX_HASHTAGS} хэш-тегов`;
-  }
-
-  for (let i = 0; i < hashtags.length; i++) {
-    const hashtag = hashtags[i];
-
-    if (!HASHTAG_REGEX.test(hashtag)) {
-      if (hashtag[0] !== '#') {
-        return 'Хэш-тег должен начинаться с #';
-      }
-      if (hashtag.length === 1) {
-        return 'Хэш-тег не может состоять только из #';
-      }
-      if (hashtag.length > 20) {
-        return 'Максимальная длина хэш-тега 20 символов';
-      }
-      if (hashtag.includes(' ', 1)) {
-        return 'Внутри хэш-тега не должно быть пробелов';
-      }
-      return 'Недопустимые символы в хэш-теге';
-    }
-    const firstIndex = hashtags.indexOf(hashtag);
-    if (firstIndex !== i) {
-      return 'Хэш-теги не должны повторяться';
-    }
-  }
-
-  return '';
-};
 
 function validateComment (value) {
   return value.length <= MAX_COMMENT_LENGTH;
@@ -84,7 +63,7 @@ const initPristine = () => {
   pristineInstance.addValidator(
     hashtagsInput,
     validateHashtags,
-    getHashtagErrorMessage
+    () => lastHashtagError
   );
 
   pristineInstance.addValidator(
@@ -107,6 +86,9 @@ const onFormSubmit = (evt) => {
 const showForm = () => {
   const overlay = document.querySelector('.img-upload__overlay');
   const scaleValue = document.querySelector('.scale__control--value');
+  const cancelButton = document.querySelector('.img-upload__cancel');
+  const hashtagsInput = document.querySelector('.text__hashtags');
+  const commentInput = document.querySelector('.text__description');
 
   overlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
@@ -125,12 +107,18 @@ const showForm = () => {
   }
 
   document.addEventListener('keydown', onDocumentKeydown);
+  hashtagsInput.addEventListener('keydown', onHashtagInputKeydown);
+  commentInput.addEventListener('keydown', onCommentInputKeydown);
+  cancelButton.addEventListener('click', closeForm);
 };
 
 function closeForm () {
   const fileInput = document.querySelector('.img-upload__input');
   const overlay = document.querySelector('.img-upload__overlay');
   const form = document.querySelector('.img-upload__form');
+  const cancelButton = document.querySelector('.img-upload__cancel');
+  const hashtagsInput = document.querySelector('.text__hashtags');
+  const commentInput = document.querySelector('.text__description');
 
   overlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
@@ -144,6 +132,9 @@ function closeForm () {
   fileInput.value = '';
 
   document.removeEventListener('keydown', onDocumentKeydown);
+  cancelButton.removeEventListener('click', closeForm);
+  hashtagsInput.removeEventListener('keydown', onHashtagInputKeydown);
+  commentInput.removeEventListener('keydown', onCommentInputKeydown);
 }
 
 function onDocumentKeydown (evt){
@@ -161,35 +152,28 @@ function onDocumentKeydown (evt){
   }
 }
 
-const onHashtagInputKeydown = (evt) => {
+function onHashtagInputKeydown (evt) {
   if (evt.key === 'Escape') {
     evt.stopPropagation();
   }
-};
+}
 
-const onCommentInputKeydown = (evt) => {
+function onCommentInputKeydown (evt){
   if (evt.key === 'Escape') {
     evt.stopPropagation();
   }
-};
+}
+
 
 const initForm = () => {
   const fileInput = document.querySelector('.img-upload__input');
-  const cancelButton = document.querySelector('.img-upload__cancel');
   const form = document.querySelector('.img-upload__form');
-  const hashtagsInput = document.querySelector('.text__hashtags');
-  const commentInput = document.querySelector('.text__description');
 
   pristine = initPristine();
 
   fileInput.addEventListener('change', showForm);
 
-  cancelButton.addEventListener('click', closeForm);
-
   form.addEventListener('submit', onFormSubmit);
-
-  hashtagsInput.addEventListener('keydown', onHashtagInputKeydown);
-  commentInput.addEventListener('keydown', onCommentInputKeydown);
 };
 
-export { initForm, closeForm };
+export {initForm};
