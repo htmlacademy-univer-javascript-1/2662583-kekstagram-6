@@ -9,7 +9,7 @@ const validateHashtags = (value) => {
     return true;
   }
 
-  const hashtags = value.toLowerCase().split(' ').filter((tag) => tag.length > 0);
+  const hashtags = value.toLowerCase().trim().split(/\s+/).filter((tag) => tag.length > 0);
 
   if (hashtags.length > MAX_HASHTAGS) {
     lastHashtagError = `Максимум ${MAX_HASHTAGS} хэш-тегов`;
