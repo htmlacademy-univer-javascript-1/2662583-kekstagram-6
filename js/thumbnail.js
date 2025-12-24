@@ -1,5 +1,6 @@
 import {openBigPicture} from './bigPicture.js';
 import {getData} from './api.js';
+import {initFilter} from './filters.js';
 
 const createThumbnail = (post) => {
   const pictureTemplate =  document.querySelector('#picture').content;
@@ -64,6 +65,7 @@ const initThumbnails = async () => {
   try {
     const posts = await getData();
     renderThumbnails(posts);
+    initFilter(posts, renderThumbnails);
   } catch (error) {
     showLoadError();
   }
