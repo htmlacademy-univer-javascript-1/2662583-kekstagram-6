@@ -214,6 +214,34 @@ function onCommentInputKeydown (evt){
   }
 }
 
+const onFileInputChange = () => {
+  const preview = document.querySelector('.img-upload__preview img');
+  const fileInput = document.querySelector('.img-upload__input');
+  const effectsPreviews = document.querySelectorAll('.effects__preview');
+  const file = fileInput.files[0];
+  if (!file) {
+    return;
+  }
+  const fileName = file.name.toLowerCase();
+  const matches = fileName.endsWith('.jpg') ||
+                  fileName.endsWith('.jpeg') ||
+                  fileName.endsWith('.png') ||
+                  fileName.endsWith('.gif') ||
+                  fileName.endsWith('.webp');
+
+  if (!matches) {
+    fileInput.value = '';
+    return;
+  }
+
+  const fileUrl = URL.createObjectURL(file);
+  preview.src = fileUrl;
+
+  effectsPreviews.forEach((effectPreview) => {
+    effectPreview.style.backgroundImage = `url(${fileUrl})`;
+  });
+  showForm();
+};
 
 const initForm = () => {
   const fileInput = document.querySelector('.img-upload__input');
@@ -222,7 +250,7 @@ const initForm = () => {
 
   pristine = initPristine();
 
-  fileInput.addEventListener('change', showForm);
+  fileInput.addEventListener('change', onFileInputChange);
 
   form.addEventListener('submit', onFormSubmit);
 
