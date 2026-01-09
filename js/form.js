@@ -1,6 +1,6 @@
-import {HASHTAG_REGEX, MAX_HASHTAGS, MAX_COMMENT_LENGTH} from './constants.js';
+import {HASHTAG_REGEX, MAX_HASHTAGS, MAX_COMMENT_LENGTH, FILE_TYPES} from './constants.js';
 import { sendData } from './api.js';
-import { showSuccess, showError, showLoading } from './messages.js';
+import { showSuccess, showError, showLoading, showFileError } from './messages.js';
 
 let pristine;
 let lastHashtagError = '';
@@ -222,14 +222,12 @@ const onFileInputChange = () => {
   if (!file) {
     return;
   }
+
   const fileName = file.name.toLowerCase();
-  const matches = fileName.endsWith('.jpg') ||
-                  fileName.endsWith('.jpeg') ||
-                  fileName.endsWith('.png') ||
-                  fileName.endsWith('.gif') ||
-                  fileName.endsWith('.webp');
+  const matches = FILE_TYPES.some((type) => fileName.endsWith(`.${type}`));
 
   if (!matches) {
+    showFileError();
     fileInput.value = '';
     return;
   }
