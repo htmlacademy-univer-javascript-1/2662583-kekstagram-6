@@ -75,22 +75,7 @@ const showLoading = () => {
 const showFileError = () => {
   const fileError = document.createElement('div');
   fileError.className = 'file-error';
-  fileError.style.cssText = `
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff6b6b;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    z-index: 9999;
-    text-align: center;
-    font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  `;
-
-  fileError.textContent = 'Ошибка загрузки файла.';
+  fileError.textContent = 'Ошибка загрузки файла';
   document.body.appendChild(fileError);
 
   setTimeout(() => {
