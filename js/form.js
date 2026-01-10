@@ -1,6 +1,6 @@
-import {HASHTAG_REGEX, MAX_HASHTAGS, MAX_COMMENT_LENGTH} from './constants.js';
+import {HASHTAG_REGEX, MAX_HASHTAGS, MAX_COMMENT_LENGTH, FILE_TYPES} from './constants.js';
 import { sendData } from './api.js';
-import { showSuccess, showError, showLoading } from './messages.js';
+import { showSuccess, showError, showLoading, showFileError } from './messages.js';
 
 let pristine;
 let lastHashtagError = '';
@@ -214,6 +214,32 @@ function onCommentInputKeydown (evt){
   }
 }
 
+const onFileInputChange = () => {
+  const preview = document.querySelector('.img-upload__preview img');
+  const fileInput = document.querySelector('.img-upload__input');
+  const effectsPreviews = document.querySelectorAll('.effects__preview');
+  const file = fileInput.files[0];
+  if (!file) {
+    return;
+  }
+
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((type) => fileName.endsWith(`.${type}`));
+
+  if (!matches) {
+    showFileError();
+    fileInput.value = '';
+    return;
+  }
+
+  const fileUrl = URL.createObjectURL(file);
+  preview.src = fileUrl;
+
+  effectsPreviews.forEach((effectPreview) => {
+    effectPreview.style.backgroundImage = `url(${fileUrl})`;
+  });
+  showForm();
+};
 
 const initForm = () => {
   const fileInput = document.querySelector('.img-upload__input');
@@ -222,7 +248,7 @@ const initForm = () => {
 
   pristine = initPristine();
 
-  fileInput.addEventListener('change', showForm);
+  fileInput.addEventListener('change', onFileInputChange);
 
   form.addEventListener('submit', onFormSubmit);
 

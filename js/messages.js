@@ -72,4 +72,16 @@ const showLoading = () => {
     }
   };
 };
-export { showSuccess, showError, showLoading };
+const showFileError = () => {
+  const fileError = document.createElement('div');
+  fileError.className = 'file-error';
+  fileError.textContent = 'Ошибка загрузки файла';
+  document.body.appendChild(fileError);
+
+  setTimeout(() => {
+    if (fileError.parentNode) {
+      fileError.remove();
+    }
+  }, 5000);
+};
+export { showSuccess, showError, showLoading, showFileError };
